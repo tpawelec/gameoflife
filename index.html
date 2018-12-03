@@ -7,72 +7,77 @@
     <title>Game of Life</title>
 </head>
 <body>
-    <canvas id="gameOfLifeID" width="800" height="800"></canvas>
     <input type="range" name="res" id="resolutionId" min="10" max="100" value="20" step="5">
-    <script>
-        const resolutionDOM = document.querySelector("#resolutionId");
-        const canvasDOM = document.querySelector("#gameOfLifeID");
-        const canv = canvasDOM.getContext("2d");
-        let resolution = 20;
-        let cellSize = canvasDOM.width / resolution;
-        let cells;
-        let mouseClicked = false;
-        
-        cells = new Array(resolution * resolution);
-        resolutionDOM.oninput = function() {
-            resolution = this.value;
-            cellSize = canvasDOM.width / resolution;
-            cells = new Array(resolution * resolution);
-            draw();
-        }
-        
-        draw();
-        
-        canvasDOM.addEventListener('mousedown', (e) => {
-            mouseClicked = true;
-            drawCells(e);
-        });
-        canvasDOM.addEventListener('mouseup', () => mouseClicked = false);
-        canvasDOM.addEventListener('mouseout', () => mouseClicked = false);
-        canvasDOM.addEventListener('mousemove', drawCells);
 
-        function draw() {
-            canv.clearRect(0, 0, canvasDOM.width, canvasDOM.height);
-            
+    <script src="lib/p5.min.js"></script>
+    <script src="lib/p5.dom.min.js"></script>
+    <script>
+            let cells;
+            let resolution = 20;
+            let cellSize;
+        function setup() {
+            createCanvas(800, 800);
+            const resolutionDOM = document.querySelector("#resolutionId");
+            let mouseClicked = false;
+            cellSize = width / resolution;
+
+            cells = new Array(resolution * resolution);
+
             for(let i = 0; i < cells.length; i++) {
                 cells[i] = 0;
+             }
+            resolutionDOM.oninput = function() {
+            resolution = this.value;
+            cellSize = width / resolution;
+            cells = new Array(resolution * resolution);
+            draw();
+            }
+            
+        }
+
+        function draw() {
+            background(0);
+
+            for(let i = 0; i < cells.length; i++) {
                 let x = i % resolution;
                 let y = Math.floor(i / resolution);
-                canv.beginPath();
-                canv.lineWidth = "1";
-                canv.strokeStyle = "black";
-                canv.rect(x*cellSize, y*cellSize, cellSize, cellSize);
-                canv.stroke();
+                if(cells[i] === 0) {
+                    fill(255);
+                    stroke(0);
+                    rect(x*cellSize, y*cellSize, cellSize - 1, cellSize - 1);
+                } else {
+                    fill(0);
+                    stroke(0);
+                    rect(x*cellSize, y*cellSize, cellSize - 1, cellSize - 1);
+                }
+            }
+
+            
+
+            if((mouseX >= 0 && mouseX <= width) && (mouseX >= 0 && mouseX <= width)) {
+                if(mouseIsPressed) {
+                    
+                    let pxCoordinate = Math.floor(pmouseX / cellSize);
+                    let pyCoordinate = Math.floor(pmouseY / cellSize);
+                    let xCoordinate = Math.floor(mouseX / cellSize);
+                    let yCoordinate = Math.floor(mouseY / cellSize);
+                    if((pxCoordinate != xCoordinate) || (pyCoordinate != yCoordinate)) {
+                        if(cells[xCoordinate + resolution * yCoordinate] === 0) {
+                            cells[xCoordinate + resolution * yCoordinate] = 1;
+                            fill(0);
+                            stroke(0);
+                            rect(xCoordinate*cellSize, yCoordinate*cellSize, cellSize - 1, cellSize - 1);
+                        } else {
+                            cells[xCoordinate + resolution * yCoordinate] = 0;
+                            fill(255);
+                            stroke(0);
+                            rect(xCoordinate*cellSize, yCoordinate*cellSize, cellSize - 1, cellSize - 1);
+                        }
+                    }
+                }
             }
         }
 
-        function drawCells(e) {
-            if(!mouseClicked) return;
-            let xCoordinate = Math.floor(e.offsetX / cellSize);
-            let yCoordinate = Math.floor(e.offsetY / cellSize);
-
-            if(cells[xCoordinate + canvasDOM.width * yCoordinate] === 0) {
-                cells[xCoordinate + canvasDOM.width * yCoordinate] = 1;
-                canv.beginPath();
-                canv.lineWidth = "1";
-                canv.fillStyle = "black";
-                canv.rect(xCoordinate*cellSize, yCoordinate*cellSize, cellSize, cellSize);
-                canv.fill();
-            } else {
-                cells[xCoordinate + canvasDOM.width * yCoordinate] = 0;
-                canv.beginPath();
-                canv.lineWidth = "1";
-                canv.fillStyle = "white";
-                canv.rect(xCoordinate*cellSize, yCoordinate*cellSize, cellSize, cellSize);
-                canv.fill();
-            }
-
-        }
     </script>
 </body>
 </html>
