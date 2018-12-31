@@ -119,6 +119,16 @@ function draw() {
 
 }
 
+function mousePressed() {
+    let xCoordinate = Math.floor(mouseX / cellSize);
+    let yCoordinate = Math.floor(mouseY / cellSize);
+    if(cells[xCoordinate + resolution * yCoordinate] === 0) {
+        cells[xCoordinate + resolution * yCoordinate] = 1;
+    } else {
+        cells[xCoordinate + resolution * yCoordinate] = 0;
+    }
+}
+
 /*
     function runLife() and countNeighbors()
 
